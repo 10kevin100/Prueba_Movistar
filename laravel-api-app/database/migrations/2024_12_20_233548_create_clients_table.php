@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('lastName');
             $table->string('email');
             $table->string('phone')->nullable();
+            $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
     }

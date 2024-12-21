@@ -13,9 +13,9 @@ return new class extends Migration
             $table->id();
             $table->foreignId('client_id')->constrained()->onDelete('cascade');
             $table->unsignedBigInteger('user_id')->nullable();
-            //$table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->string('action');
-            $table->json('changes')->nullable();
+            $table->json('old_values')->nullable();
+            $table->json('new_values')->nullable();
             $table->timestamps();
         });
     }

@@ -10,7 +10,8 @@ class ClientAudit extends Model
         'client_id',
         'user_id',
         'action',
-        'changes',
+        'old_values',
+        'new_values',
     ];
     public $timestamps = true;
 }
