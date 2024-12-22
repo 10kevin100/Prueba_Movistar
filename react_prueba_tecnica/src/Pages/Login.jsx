@@ -33,9 +33,9 @@ export default function Login() {
 
       if (response.ok) {
         localStorage.setItem('auth_token', result.token);
-        setToken(result.token); // Actualiza el token en el contexto
-        setUser(result.user); // Guarda los datos del usuario en el contexto
-        navigate('/home'); // Redirige a Home
+        setToken(result.token);
+        setUser(result.user);
+        navigate('/');
       } else {
         setError('Email o contraseña incorrectos');
       }
