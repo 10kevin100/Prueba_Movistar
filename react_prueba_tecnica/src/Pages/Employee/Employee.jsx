@@ -150,10 +150,11 @@ export default function Employee() {
       </div>
 
       <div className="flex justify-between items-center mb-4 mt-5">
+      <Link to="/employee/create" className="text-white">
         <button className="bg-green-500 text-white text-base px-4 py-2 my-2 rounded-md hover:bg-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-300 transition duration-300 ease-in-out">
-          <Link to="/employee/create" className="text-white">Agregar empleado</Link>
+          Agregar empleado
         </button>
-
+        </Link>
         <input
           type="text"
           value={search}
@@ -163,7 +164,7 @@ export default function Employee() {
         />
       </div>
 
-      <table className="w-full text-sm text-center text-white dark:text-gray-700">
+      <table className="w-full text-sm text-center text-black dark:text-gray-700">
         <thead className="text-xs text-center text-white uppercase bg-gray-300 dark:bg-gray-600 dark:text-gray-400">
           <tr className="text-white text-base bg-slate-700">
             <th
@@ -220,11 +221,13 @@ export default function Employee() {
                 <td className="px-2 py-4 border-b">{employee.job_title}</td>
                 <td className="px-2 py-4 border-b">{employee.joined_at}</td>
                 <td className="px-2 py-4 border-b">
+                <Link to={`/employee/edit/${employee.id}`}>
                   <button
                     className="bg-orange-500 text-white px-4 py-2 mx-2 rounded-md hover:bg-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-300 transition duration-300 ease-in-out"
                   >
-                  <Link to={`/employee/edit/${employee.id}`}><FontAwesomeIcon icon={faPencil} /></Link>
+                    <FontAwesomeIcon icon={faPencil} />
                   </button>
+                  </Link>
                   <button
                     className="bg-red-500 text-white px-4 py-2 mx-2 rounded-md hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-teal-300 transition duration-300 ease-in-out"
                     onClick={() => openModal(employee)}

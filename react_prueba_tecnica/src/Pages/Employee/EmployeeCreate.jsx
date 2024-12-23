@@ -58,6 +58,7 @@ export default function EmployeeCreate() {
             placeholder="Nombre del empleado"
             value={formData.name}
             onChange={handleInputChange}
+            maxLength={60}
             className="mt-2 w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-300"
             />
             {errors.name && <p className="text-sm text-red-500 mt-1">{errors.name[0]}</p>}
@@ -72,6 +73,7 @@ export default function EmployeeCreate() {
             placeholder="Correo electrónico"
             value={formData.email}
             onChange={handleInputChange}
+            maxLength={40}
             className="mt-2 w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-300"
             />
             {errors.email && <p className="text-sm text-red-500 mt-1">{errors.email[0]}</p>}
@@ -86,6 +88,7 @@ export default function EmployeeCreate() {
             placeholder="Contraseña"
             value={formData.password}
             onChange={handleInputChange}
+            maxLength={20}
             className="mt-2 w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-300"
             />
             {errors.password && <p className="text-sm text-red-500 mt-1">{errors.password[0]}</p>}
@@ -100,6 +103,7 @@ export default function EmployeeCreate() {
             placeholder="Confirmar contraseña"
             value={formData.password_confirmation}
             onChange={handleInputChange}
+            maxLength={20}
             className="mt-2 w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-300"
             />
             {errors.password_confirmation && <p className="text-sm text-red-500 mt-1">{errors.password_confirmation[0]}</p>}
@@ -114,6 +118,7 @@ export default function EmployeeCreate() {
             placeholder="Cargo"
             value={formData.job_title}
             onChange={handleInputChange}
+            maxLength={50}
             className="mt-2 w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-300"
             />
             {errors.job_title && <p className="text-sm text-red-500 mt-1">{errors.job_title[0]}</p>}

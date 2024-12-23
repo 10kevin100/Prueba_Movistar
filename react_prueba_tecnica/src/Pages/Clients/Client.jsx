@@ -170,18 +170,92 @@ export default function ClientList() {
 
   const formatValues = (values) => {
     if (!values) return "No hay datos";
+    // Solo estos campos se van a mostrar
+    const allowedFields = ['name', 'lastName', 'email', 'phone', 'addresses', 'documents', 'is_active'];
+  
     try {
       const parsed = typeof values === 'string' ? JSON.parse(values) : values;
-      return Object.entries(parsed)
-        .map(([key, value]) => {
-          if (Array.isArray(value)) {
-            return `${key}: ${JSON.stringify(value)}`;
+      // Si es un array con un solo objeto
+      if (Array.isArray(parsed)) {
+        if (parsed.length === 1 && typeof parsed[0] === 'object') {
+          return Object.entries(parsed[0])
+            .filter(([key]) => allowedFields.includes(key))
+            .map(([key, value]) => {
+              switch (key) {
+                case 'name': return `Nombre: ${value}`;
+                case 'lastName': return `Apellido: ${value}`;
+                case 'email': return `Email: ${value}`;
+                case 'phone': return `Teléfono: ${value}`;
+                case 'addresses': 
+                  return value.map((address, index) => (
+                    `Dirección ${index + 1}: ${address.address}, ${address.postal_code}, ${address.country}`
+                  )).join(', ');
+                case 'documents': 
+                  return value.map((doc, index) => (
+                    `Documento ${index + 1}: ${doc.document_type} - ${doc.document_number}`
+                  )).join(', ');
+                case 'is_active':
+                  return `Estado: se cambió estado`;
+                default: return `${key}: ${value}`;
+              }
+            })
+            .join(', ');
+        }
+        return parsed.map((item) => {
+          if (typeof item === 'object') {
+            return Object.entries(item)
+              .filter(([key]) => allowedFields.includes(key))
+              .map(([key, value]) => {
+                switch (key) {
+                  case 'name': return `Nombre: ${value}`;
+                  case 'lastName': return `Apellido: ${value}`;
+                  case 'email': return `Email: ${value}`;
+                  case 'phone': return `Teléfono: ${value}`;
+                  case 'addresses': 
+                    return value.map((address, index) => (
+                      `Dirección ${index + 1}: ${address.address}, ${address.postal_code}, ${address.country}`
+                    )).join(', ');
+                  case 'documents': 
+                    return value.map((doc, index) => (
+                      `Documento ${index + 1}: ${doc.document_type} - ${doc.document_number}`
+                    )).join(', ');
+                  case 'is_active':
+                    return `Se cambió estado`;
+                  default: return `${key}: ${value}`;
+                }
+              })
+              .join(', ');
           }
-          return `${key}: ${value}`;
+          return item;
+        }).join(', ');
+      }
+  
+      // Si es un objeto (no un array)
+      return Object.entries(parsed)
+        .filter(([key]) => allowedFields.includes(key))
+        .map(([key, value]) => {
+          switch (key) {
+            case 'name': return `Nombre: ${value}`;
+            case 'lastName': return `Apellido: ${value}`;
+            case 'email': return `Email: ${value}`;
+            case 'phone': return `Teléfono: ${value}`;
+            case 'addresses': 
+              return value.map((address, index) => (
+                `Dirección ${index + 1}: ${address.address}, ${address.postal_code}, ${address.country}`
+              )).join(', ');
+            case 'documents': 
+              return value.map((doc, index) => (
+                `Documento ${index + 1}: ${doc.document_type} - ${doc.document_number}`
+              )).join(', ');
+            case 'is_active':
+              return `Se cambió el estado`;
+            default: return `${key}: ${value}`;
+          }
         })
         .join(', ');
+  
     } catch (error) {
-        console.error("Error:", error);
+      console.error("Error:", error);
       return values;
     }
   };
@@ -193,10 +267,11 @@ export default function ClientList() {
       </div>
 
       <div className="flex justify-between items-center mb-4 mt-5">
+        <Link to="/client/create" className="text-white">
         <button className="bg-green-500 text-white text-base px-4 py-2 my-2 rounded-md hover:bg-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-300 transition duration-300 ease-in-out">
-          <Link to="/client/create" className="text-white">Agregar cliente</Link>
+          Agregar cliente
         </button>
-
+        </Link>
         <input
           type="text"
           value={search}
@@ -206,7 +281,7 @@ export default function ClientList() {
         />
       </div>
 
-      <table className="w-full text-sm text-center text-white dark:text-gray-700">
+      <table className="w-full text-sm text-center text-black dark:text-gray-700">
         <thead className="text-xs text-center text-white uppercase bg-gray-300 dark:bg-gray-600 dark:text-gray-400">
           <tr className="text-white text-base bg-slate-700">
             <th
@@ -233,7 +308,14 @@ export default function ClientList() {
               Correo
               <FontAwesomeIcon icon={sortConfig.key === 'email' && sortConfig.direction === 'asc' ? faSortUp : sortConfig.key === 'email' && sortConfig.direction === 'desc' ? faSortDown : faSort} className="ml-2" />
             </th>
-            <th className="px-4 py-3 border-b">Teléfono</th>
+            <th
+              scope="col"
+              className="px-4 py-3 border-b cursor-pointer"
+              onClick={() => handleSort('phone')}
+            >
+              Teléfono
+              <FontAwesomeIcon icon={sortConfig.key === 'phone' && sortConfig.direction === 'asc' ? faSortUp : sortConfig.key === 'phone' && sortConfig.direction === 'desc' ? faSortDown : faSort} className="ml-2" />
+            </th>
             <th className="px-4 py-3 border-b">Direcciones</th>
             <th className="px-4 py-3 border-b">Documentos</th>
             <th className="px-4 py-3 border-b">Estado</th>
@@ -279,16 +361,18 @@ export default function ClientList() {
                 {client.is_active === 1 ? 'Activo' : 'Inactivo'}
               </td>
               <td className="px-2 py-4 border-b">
-                <button className="bg-orange-500 text-white px-4 py-2 mx-2 rounded-md hover:bg-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-300 transition duration-300 ease-in-out">
+                {client.is_active !== 0 && (
                   <Link to={`/client/edit/${client.id}`}>
+                  <button className="bg-orange-500 text-white px-4 py-2 mx-2 rounded-md hover:bg-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-300 transition duration-300 ease-in-out">
                     <FontAwesomeIcon icon={faPencil} />
+                  </button>
                   </Link>
-                </button>
+                )}
                 <button
-                className="bg-blue-500 text-white px-4 py-2 mx-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300 transition duration-300 ease-in-out"
-                onClick={() => openLogModal(client.id, `${client.name} ${client.lastName}`)}
+                  className="bg-blue-500 text-white px-4 py-2 mx-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300 transition duration-300 ease-in-out"
+                  onClick={() => openLogModal(client.id, `${client.name} ${client.lastName}`)}
                 >
-                <FontAwesomeIcon icon={faEye} />
+                  <FontAwesomeIcon icon={faEye} />
                 </button>
                 {client.is_active === 1 && (
                   <button
@@ -370,7 +454,7 @@ export default function ClientList() {
                     <td className="px-4 py-3">
                         {new Date(log.created_at).toLocaleString()}
                     </td>
-                    <td className="px-4 py-3">ID: {log.user_id}</td>
+                    <td className="px-4 py-3">{log.user_name}</td>
                     <td className="px-4 py-3 capitalize">{log.action}</td>
                     <td className="px-4 py-3">{formatValues(log.old_values)}</td>
                     <td className="px-4 py-3">{formatValues(log.new_values)}</td>

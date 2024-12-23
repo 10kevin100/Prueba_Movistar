@@ -16,12 +16,13 @@ class ClientAuditController extends Controller
      */
     public function index(Client $client)
     {
-        // Obtener los registros de auditoría relacionados con este cliente
-        $logs = $client->audits()->get();
-
+        $logs = $client->audits()->with('user')->get();
         return response()->json([
             'client_id' => $client->id,
-            'logs' => $logs
+            'logs' => $logs->map(function ($log) {
+                $log->user_name = $log->user ? $log->user->name : null;
+                return $log;
+            })
         ]);
     }
 }

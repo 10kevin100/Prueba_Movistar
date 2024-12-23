@@ -27,7 +27,6 @@ export default function Layout() {
             navigate("/");
         }
     }
-
     return (
         <>
             <header>
@@ -52,7 +51,7 @@ export default function Layout() {
                                     )}
                                     <a href="/client" className="text-white hover:bg-blue-700 px-2 py-2 rounded-md text-lg font-medium">Clientes</a>
                                     {role === 'admin' && (
-                                        <a href="#" className="text-white hover:bg-blue-700 px-2 py-2 rounded-md text-lg font-medium">Reporte</a>
+                                        <a href="/client/logs" className="text-white hover:bg-blue-700 px-2 py-2 rounded-md text-lg font-medium">Reporte</a>
                                     )}
                                     <form onSubmit={handleLogout}>
                                         <button className="text-white hover:bg-blue-700 px-2 py-2 rounded-md text-lg font-medium">Salir</button>

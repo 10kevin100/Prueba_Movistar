@@ -104,6 +104,7 @@ export default function CreateClient() {
             placeholder="Nombre del cliente"
             value={formData.name}
             onChange={(e) => handleInputChange(e, null, "general")}
+            maxLength={80}
             className="mt-2 w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-300"
           />
           {errors.name && <p className="text-sm text-red-500 mt-1">{errors.name[0]}</p>}
@@ -119,6 +120,7 @@ export default function CreateClient() {
             placeholder="Apellido del cliente"
             value={formData.lastName}
             onChange={(e) => handleInputChange(e, null, "general")}
+            maxLength={80}
             className="mt-2 w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-300"
           />
           {errors.lastName && <p className="text-sm text-red-500 mt-1">{errors.lastName[0]}</p>}
@@ -134,6 +136,7 @@ export default function CreateClient() {
             placeholder="Correo electrónico"
             value={formData.email}
             onChange={(e) => handleInputChange(e, null, "general")}
+            maxLength={70}
             className="mt-2 w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-300"
           />
           {errors.email && <p className="text-sm text-red-500 mt-1">{errors.email[0]}</p>}
@@ -149,6 +152,8 @@ export default function CreateClient() {
             placeholder="Teléfono"
             value={formData.phone}
             onChange={(e) => handleInputChange(e, null, "general")}
+            maxLength={20}
+            pattern="[0-9]*" 
             className="mt-2 w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-300"
           />
           {errors.phone && <p className="text-sm text-red-500 mt-1">{errors.phone[0]}</p>}
@@ -165,6 +170,7 @@ export default function CreateClient() {
                 placeholder="Calle"
                 value={address.address}
                 onChange={(e) => handleInputChange(e, index, "addresses")}
+                maxLength={100}
                 className="mt-2 w-full p-3 border border-gray-300 rounded-md"
               />
               <input
@@ -173,6 +179,7 @@ export default function CreateClient() {
                 placeholder="Código Postal"
                 value={address.postal_code}
                 onChange={(e) => handleInputChange(e, index, "addresses")}
+                maxLength={20}
                 className="mt-2 w-full p-3 border border-gray-300 rounded-md"
               />
              <input
@@ -181,6 +188,7 @@ export default function CreateClient() {
                 placeholder="País"
                 value={address.country}
                 onChange={(e) => handleInputChange(e, index, "addresses")}
+                maxLength={20}
                 className="mt-2 w-full p-3 border border-gray-300 rounded-md"
                 readOnly
                 />
@@ -218,6 +226,7 @@ export default function CreateClient() {
                 placeholder="Número de documento"
                 value={document.document_number}
                 onChange={(e) => handleInputChange(e, index, "documents")}
+                maxLength={30}
                 className="mt-2 w-full p-3 border border-gray-300 rounded-md"
               />
             </div>

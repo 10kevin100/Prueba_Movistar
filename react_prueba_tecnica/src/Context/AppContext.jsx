@@ -6,6 +6,7 @@ export default function AppProvider({ children }) {
   const [token, setToken] = useState(localStorage.getItem('auth_token') || null);
   const [user, setUser] = useState(null);
   const [role, setRole] = useState(null);
+  const [isLoading, setIsLoading] = useState(true); // Agregar estado de carga
 
   async function getUser() {
     if (token) {
@@ -29,15 +30,16 @@ export default function AppProvider({ children }) {
 
   useEffect(() => {
     if (token) {
-      getUser();
+      getUser().finally(() => setIsLoading(false)); // Cuando termine la carga, actualizar el estado
     } else {
       setUser(null);
       setRole(null);
+      setIsLoading(false);
     }
   }, [token]);
 
   return (
-    <AppContext.Provider value={{ token, setToken, user, setUser, role, setRole }}>
+    <AppContext.Provider value={{ token, setToken, user, setUser, role, setRole, isLoading }}>
       {children}
     </AppContext.Provider>
   );
