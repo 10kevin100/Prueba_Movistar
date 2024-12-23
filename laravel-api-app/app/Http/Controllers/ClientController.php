@@ -11,7 +11,7 @@ class ClientController extends Controller
 {
     public function index()
     {
-        $clients = Client::all();
+        $clients = Client::with(['addresses', 'documents'])->get();
         return response()->json(['clients' => $clients], 200);
     }
 
@@ -20,10 +20,20 @@ class ClientController extends Controller
         $fields = $request->validate([
             'name' => 'required|string',
             'lastName' => 'required|string',
-            'email' => 'required|string',
-            'phone' => 'required|string',
+            'email' => 'required|string|email',
+            'phone' => 'required|string|min:8',
             'addresses' => 'array',
             'documents' => 'array',
+        ], [
+            'name.required' => 'El campo Nombre es obligatorio.',
+            'name.string' => 'El campo Nombre debe ser una cadena de texto',
+            'lastName.required' => 'El campo Apellido es obligatorio.',
+            'lastName.string' => 'El campo Apellido debe ser una cadena de texto',
+            'email.required' => 'El campo Correo es obligatorio',
+            'email.string' => 'El campo Correo debe ser una cadena de texto',
+            'email.email' => 'El campo Correo debe tener un @',
+            'phone.required' => 'El campo Teléfono es obligatorio.',
+            'phone.string' => 'El campo Teléfono debe ser una cadena de texto.',
         ]);
     
         $client = Client::create($fields);
@@ -114,7 +124,7 @@ class ClientController extends Controller
     
     public function destroy(Client $client)
     {
-        //Desactive user
+        //Desactiva el cliente
         ClientAudit::create([
             'client_id' => $client->id,
             'user_id' => Auth::id(),
