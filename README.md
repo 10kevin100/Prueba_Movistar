@@ -91,7 +91,7 @@ npm install
 ```
 
 ### 2️⃣ Configuración de API
-En caso el php artisan serve arroge otra ruta se debe cambiar en el archivo vite.config.js el target 
+Cuando ejecutas php artisan serve, puede que el servidor inicie en una ruta diferente, por ejemplo, http://127.0.0.1:8001 o incluso una dirección de red local como http://192.168.x.x:8000. En esos casos, debes actualizar el archivo vite.config.js para que apunte correctamente al servidor backend
 ```bash
         target: 'http://127.0.0.1:8000',
 ```
