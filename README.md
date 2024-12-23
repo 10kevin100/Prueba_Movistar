@@ -53,7 +53,7 @@ Acceder a la base de datos y crear una base que se llame movistar_prueba
 
 ### 3️⃣ Crear y configurar variables de entorno
 -Acceder primero a la carpeta laravel-api-app
--Luego abrir una terminal para poder crear la variable de enterno
+-Luego abrir una terminal para poder crear la variable de entorno
 ```bash
 cp .env.example .env
 ```
