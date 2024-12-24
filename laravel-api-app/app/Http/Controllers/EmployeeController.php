@@ -124,11 +124,10 @@ class EmployeeController extends Controller
     public function destroy(Employee $employee)
     {
         $user = $employee->user;
-        $employee->delete();
-        $user->delete();
-
+        $user->is_active = false;
+        $user->update(); 
         return response()->json([
-            'message' => 'Empleado eliminado con exito',
+            'message' => 'Empleado desactivado con éxito',
         ], 200);
     }
 }

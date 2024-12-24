@@ -10,7 +10,7 @@ export default function Employee() {
   const { token } = useContext(AppContext);
   const [sortConfig, setSortConfig] = useState({ key: 'id', direction: 'asc' });
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [employeeToDelete, setEmployeeToDelete] = useState(null);
+  const [employeeToDeactivate, setEmployeeToDeactivate] = useState(null);
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -76,69 +76,75 @@ export default function Employee() {
   });
 
   const openModal = (employee) => {
-    setEmployeeToDelete(employee);
+    setEmployeeToDeactivate(employee);
     setIsModalOpen(true);
   };
 
   const closeModal = () => {
     setIsModalOpen(false);
-    setEmployeeToDelete(null);
+    setEmployeeToDeactivate(null);
   };
 
-  const deleteEmployee = async () => {
-    if (!employeeToDelete) return;
-  
+  const deactivateEmployee = async () => {
+    if (!employeeToDeactivate) return;
+
     try {
-      const response = await fetch(`/api/employee/${employeeToDelete.id}`, {
-        method: "DELETE",
+      const response = await fetch(`/api/employee/${employeeToDeactivate.id}`, {
+        method: "PATCH",  // Use PATCH to update, not DELETE
         headers: {
           "Authorization": `Bearer ${token}`,
           "Content-Type": "application/json",
         },
+        body: JSON.stringify({
+          is_active: 0, // Mark the employee as inactive
+        }),
       });
-  
+
       const data = await response.json();
-  
+
       if (response.ok) {
+        // Update the state of the employee without removing from the list
         setEmployees((prevEmployees) =>
-          prevEmployees.filter((emp) => emp.id !== employeeToDelete.id)
+          prevEmployees.map((emp) =>
+            emp.id === employeeToDeactivate.id ? { ...emp, user: { ...emp.user, is_active: 0 } } : emp
+          )
         );
-        setSuccessMessage("Empleado eliminado con éxito!");
+        setSuccessMessage("Empleado desactivado con éxito!");
         closeModal();
         setTimeout(() => {
           setSuccessMessage("");
         }, 3000);
       } else {
-        setErrorMessage(data.message || "Error desconocido al eliminar el empleado.");
+        setErrorMessage(data.message || "Error desconocido al desactivar el empleado.");
         setTimeout(() => {
           setErrorMessage("");
         }, 3000);
       }
     } catch (error) {
-      setErrorMessage("Ocurrió un error al eliminar el empleado.");
+      setErrorMessage("Ocurrió un error al desactivar el empleado.");
       console.error("Error:", error);
       setTimeout(() => {
         setErrorMessage("");
       }, 3000);
     }
   };
-  
+
   useEffect(() => {
     if (successMessage) {
       const timer = setTimeout(() => {
         setSuccessMessage("");
       }, 3000);
-      
+
       return () => clearTimeout(timer);
     }
   }, [successMessage]);
-  
+
   useEffect(() => {
     if (errorMessage) {
       const timer = setTimeout(() => {
         setErrorMessage("");
       }, 3000);
-      
+
       return () => clearTimeout(timer);
     }
   }, [errorMessage]);
@@ -150,10 +156,10 @@ export default function Employee() {
       </div>
 
       <div className="flex justify-between items-center mb-4 mt-5">
-      <Link to="/employee/create" className="text-white">
-        <button className="bg-green-500 text-white text-base px-4 py-2 my-2 rounded-md hover:bg-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-300 transition duration-300 ease-in-out">
-          Agregar empleado
-        </button>
+        <Link to="/employee/create" className="text-white">
+          <button className="bg-green-500 text-white text-base px-4 py-2 my-2 rounded-md hover:bg-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-300 transition duration-300 ease-in-out">
+            Agregar empleado
+          </button>
         </Link>
         <input
           type="text"
@@ -207,6 +213,7 @@ export default function Employee() {
               Fecha de Ingreso
               <FontAwesomeIcon icon={sortConfig.key === 'joined_at' && sortConfig.direction === 'asc' ? faSortUp : sortConfig.key === 'joined_at' && sortConfig.direction === 'desc' ? faSortDown : faSort} className="ml-2" />
             </th>
+            <th scope="col" className="px-4 py-3 border-b">Estado</th>
             <th scope="col" className="px-4 py-3 border-b">Acciones</th>
           </tr>
         </thead>
@@ -220,13 +227,18 @@ export default function Employee() {
                 <td className="px-2 py-4 border-b">{employee.user.email}</td>
                 <td className="px-2 py-4 border-b">{employee.job_title}</td>
                 <td className="px-2 py-4 border-b">{employee.joined_at}</td>
+                <td
+                  className={`px-2 py-4 border-b ${employee.user.is_active === 1 ? 'bg-green-500 text-white' : 'bg-red-500 text-white'} rounded`}
+                >
+                  {employee.user.is_active === 1 ? 'Activo' : 'Inactivo'}
+                </td>
                 <td className="px-2 py-4 border-b">
-                <Link to={`/employee/edit/${employee.id}`}>
-                  <button
-                    className="bg-orange-500 text-white px-4 py-2 mx-2 rounded-md hover:bg-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-300 transition duration-300 ease-in-out"
-                  >
-                    <FontAwesomeIcon icon={faPencil} />
-                  </button>
+                  <Link to={`/employee/edit/${employee.id}`}>
+                    <button
+                      className="bg-orange-500 text-white px-4 py-2 mx-2 rounded-md hover:bg-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-300 transition duration-300 ease-in-out"
+                    >
+                      <FontAwesomeIcon icon={faPencil} />
+                    </button>
                   </Link>
                   <button
                     className="bg-red-500 text-white px-4 py-2 mx-2 rounded-md hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-teal-300 transition duration-300 ease-in-out"
@@ -257,12 +269,12 @@ export default function Employee() {
           {errorMessage}
         </div>
       )}
-      
-      {/* Modal de Eliminación */}
+
+      {/* Modal de Desactivación */}
       {isModalOpen && (
         <div className="fixed inset-0 flex justify-center items-center bg-gray-500 bg-opacity-50">
           <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
-            <h2 className="text-xl font-semibold mb-4">¿Estás seguro de que deseas eliminar este empleado?</h2>
+            <h2 className="text-xl font-semibold mb-4">¿Estás seguro de que deseas desactivar este empleado?</h2>
             <div className="flex justify-end">
               <button
                 className="bg-gray-300 text-black px-4 py-2 rounded-md mr-2"
@@ -272,9 +284,9 @@ export default function Employee() {
               </button>
               <button
                 className="bg-red-500 text-white px-4 py-2 rounded-md"
-                onClick={deleteEmployee}
+                onClick={deactivateEmployee}
               >
-                Eliminar
+                Desactivar
               </button>
             </div>
           </div>
